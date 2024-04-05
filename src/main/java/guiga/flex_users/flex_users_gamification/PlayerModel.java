@@ -32,6 +32,9 @@ public class PlayerModel {
     @Column
     private Integer points = 0;
 
+    @Column
+    private String name;
+
     @Column(columnDefinition = "jsonb")
     @Type(JsonType.class)
     private Map<String, Object> document;
