@@ -34,6 +34,6 @@ public class PlayerModel {
 
     @Column(columnDefinition = "jsonb")
     @Type(JsonType.class)
-    private Map<String, String> document;
+    private Map<String, Object> document;
 
 }
