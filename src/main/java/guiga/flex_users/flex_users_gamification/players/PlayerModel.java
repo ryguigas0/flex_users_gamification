@@ -1,4 +1,4 @@
-package guiga.flex_users.flex_users_gamification;
+package guiga.flex_users.flex_users_gamification.players;
 
 import java.util.Map;
 
@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -23,6 +24,8 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @ToString
+// Here so hibernate doesnt crash
+@NoArgsConstructor
 public class PlayerModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

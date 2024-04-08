@@ -1,8 +1,11 @@
-package guiga.flex_users.flex_users_gamification.transfer;
+package guiga.flex_users.flex_users_gamification.players.transfer;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
-import guiga.flex_users.flex_users_gamification.exceptions.InvalidPlayerDocument;
+import guiga.flex_users.flex_users_gamification.players.exceptions.InvalidPlayerDocument;
+import jakarta.persistence.MapKey;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,17 +26,11 @@ public class PlayerIn {
     private Map<String, Object> document;
 
     public PlayerIn(String name, Integer points, Map<String, Object> document) {
+        this.document = document;
+
         this.name = name;
 
         this.points = points;
-
-        for (Object value : document.values()) {
-            if (!(value instanceof String || value instanceof Integer || value instanceof Double)) {
-                throw new InvalidPlayerDocument();
-            }
-        }
-
-        this.document = document;
     }
 
 }

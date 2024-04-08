@@ -1,4 +1,4 @@
-package guiga.flex_users.flex_users_gamification;
+package guiga.flex_users.flex_users_gamification.players;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
