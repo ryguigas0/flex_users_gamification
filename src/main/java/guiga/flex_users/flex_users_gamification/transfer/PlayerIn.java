@@ -4,7 +4,6 @@ import java.util.Map;
 
 import guiga.flex_users.flex_users_gamification.exceptions.InvalidPlayerDocument;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +15,6 @@ import lombok.ToString;
 @ToString
 public class PlayerIn {
     @NotBlank
-    @NotNull
     private String name;
 
     @Builder.Default
@@ -25,6 +23,8 @@ public class PlayerIn {
     private Map<String, Object> document;
 
     public PlayerIn(String name, Integer points, Map<String, Object> document) {
+        this.name = name;
+
         this.points = points;
 
         for (Object value : document.values()) {
