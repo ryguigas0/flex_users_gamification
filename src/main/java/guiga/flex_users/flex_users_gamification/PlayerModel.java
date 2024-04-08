@@ -17,7 +17,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table
+@Table(name = "players")
 @Builder
 @Getter
 @Setter
