@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import guiga.flex_users.flex_users_gamification.players.exceptions.InvalidPlayerDocument;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerIn;
+import guiga.flex_users.flex_users_gamification.players.transfer.PlayerListFilter;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerOut;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerParser;
 
@@ -53,7 +54,9 @@ public class PlayerService {
         return PlayerParser.from(savedPlayerModel);
     }
 
-    public List<PlayerOut> listPlayers() {
+    public List<PlayerOut> listPlayers(PlayerListFilter listFilter) {
+        System.out.println(listFilter);
+
         List<PlayerOut> output = new ArrayList<>();
 
         repo.findAll().forEach(pm -> output.add(PlayerParser.from(pm)));

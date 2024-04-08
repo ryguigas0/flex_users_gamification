@@ -1,11 +1,7 @@
 package guiga.flex_users.flex_users_gamification.players.transfer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
-import guiga.flex_users.flex_users_gamification.players.exceptions.InvalidPlayerDocument;
-import jakarta.persistence.MapKey;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
