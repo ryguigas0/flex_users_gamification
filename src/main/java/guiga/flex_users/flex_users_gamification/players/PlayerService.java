@@ -5,10 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.IntegerRange;
+import org.apache.commons.lang3.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import guiga.flex_users.flex_users_gamification.players.exceptions.InvalidFilter;
 import guiga.flex_users.flex_users_gamification.players.exceptions.InvalidPlayerDocument;
+import guiga.flex_users.flex_users_gamification.players.filter.NumberFilterRange;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerIn;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerListFilter;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerOut;
@@ -17,23 +21,24 @@ import guiga.flex_users.flex_users_gamification.players.transfer.PlayerParser;
 @Service
 public class PlayerService {
 
+    private static HashMap<String, String> documentSchema = new HashMap<>();
+
+    static {
+        documentSchema.put("age", "Integer");
+        documentSchema.put("performance", "Double");
+        documentSchema.put("cel-number", "String");
+    }
+
     @Autowired
     private PlayerRepo repo;
 
     public PlayerOut savePlayer(PlayerIn playerIn) {
-        HashMap<String, String> documentSchema = new HashMap<>();
-
-        documentSchema.put("age", "Integer");
-        documentSchema.put("performance", "Double");
-        documentSchema.put("cel-number", "String");
-
         // to check if a player document is valid...
         for (Map.Entry<String, Object> documentEntry : playerIn.getDocument().entrySet()) {
             String documentEntryKey = documentEntry.getKey();
 
             // the documentEntry key must be present in the schema
-            boolean keyPresent = documentSchema.keySet().stream()
-                    .anyMatch(schemaKey -> documentEntryKey.equals(schemaKey));
+            boolean keyPresent = documentSchema.keySet().contains(documentEntryKey);
             if (!keyPresent) {
                 throw new InvalidPlayerDocument("Attribute '" + documentEntryKey
                         + "' not present in campaign schema!");
@@ -55,7 +60,18 @@ public class PlayerService {
     }
 
     public List<PlayerOut> listPlayers(PlayerListFilter listFilter) {
-        System.out.println(listFilter);
+        for (Map.Entry<String, String> filterEntry : listFilter.getFilterMap().entrySet()) {
+            // check if filter entry key is in document schema
+            if (!documentSchema.keySet().contains(filterEntry.getKey())) {
+                throw new InvalidFilter("Attribute '" + filterEntry.getKey()
+                        + "' not present in campaign schema!");
+            }
+
+            if (documentSchema.get(filterEntry.getKey()).equals("Integer") || documentSchema.get(filterEntry.getKey()).equals("Double")) {
+                System.out.println(new NumberFilterRange(filterEntry.getValue()));
+            }
+
+        }
 
         List<PlayerOut> output = new ArrayList<>();
 
