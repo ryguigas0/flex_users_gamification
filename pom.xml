@@ -109,6 +109,15 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<configuration>
+					<url>${DATASOURCE_URL}</url>
+					<user>${POSTGRES_USER}</user>
+					<password>${POSTGRES_PASSWORD}</password>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
