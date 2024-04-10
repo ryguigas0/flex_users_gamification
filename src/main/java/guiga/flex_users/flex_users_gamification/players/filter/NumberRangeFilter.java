@@ -6,7 +6,8 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class NumberFilterRange {
+public class NumberRangeFilter {
+    private String attrName;
     private Number min = Double.MIN_VALUE;
     private Number max = Double.MAX_VALUE;
 
@@ -15,7 +16,8 @@ public class NumberFilterRange {
     private boolean inclusive_left = false;
     private boolean inclusive_right = false;
 
-    public NumberFilterRange(String filterString) {
+    public NumberRangeFilter(String attrName, String filterString) {
+        this.attrName = attrName;
         String[] filterComponents = filterString.split(",");
 
         // has min and max

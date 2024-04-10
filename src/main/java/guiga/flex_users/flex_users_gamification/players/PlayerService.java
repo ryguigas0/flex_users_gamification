@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 
 import guiga.flex_users.flex_users_gamification.players.exceptions.InvalidFilter;
 import guiga.flex_users.flex_users_gamification.players.exceptions.InvalidPlayerDocument;
-import guiga.flex_users.flex_users_gamification.players.filter.NumberFilterRange;
+import guiga.flex_users.flex_users_gamification.players.filter.NumberRangeFilter;
+import guiga.flex_users.flex_users_gamification.players.filter.StringFilter;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerIn;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerListFilter;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerOut;
@@ -67,7 +68,11 @@ public class PlayerService {
 
             if (documentSchema.get(filterEntry.getKey()).equals("Integer")
                     || documentSchema.get(filterEntry.getKey()).equals("Double")) {
-                System.out.println(filterEntry.getValue() + " --> " + new NumberFilterRange(filterEntry.getValue()));
+                System.out.println(filterEntry.getValue() + " --> "
+                        + new NumberRangeFilter(filterEntry.getKey(), filterEntry.getValue()));
+            } else if (documentSchema.get(filterEntry.getKey()).equals("String")) {
+                System.out.println(filterEntry.getValue() + " --> "
+                        + new StringFilter(filterEntry.getKey(), filterEntry.getValue()));
             }
 
         }

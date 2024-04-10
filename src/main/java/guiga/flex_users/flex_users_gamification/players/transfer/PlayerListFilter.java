@@ -11,7 +11,7 @@ public class PlayerListFilter {
 
     public PlayerListFilter(Map<String, String> filterMap) {
         String numberRangeRegex = "((\\[|\\()?)(\\d)+(.(\\d)+)?(, (\\d)+(.(\\d)+)?)?((]|\\))?)";
-        String stringFilterRegex = "(eq|ct):\"(\\w|\\d|\\s)+\"";
+        String stringFilterRegex = "(eq|ct):(\\w|\\d|\\s|\\W)+";
 
         for (Entry<String, String> filterEntry : filterMap.entrySet()) {
             if (!filterEntry.getValue().matches(numberRangeRegex)
