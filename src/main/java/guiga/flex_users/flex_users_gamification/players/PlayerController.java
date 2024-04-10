@@ -29,7 +29,7 @@ public class PlayerController {
     }
 
     @GetMapping("/")
-    public List<PlayerOut> listPlayers(@RequestParam Map<String, String> filterMap) {
+    public List<PlayerOut> listPlayers(@RequestBody Map<String, String> filterMap) {
         return service.listPlayers(new PlayerListFilter(filterMap));
     }
 

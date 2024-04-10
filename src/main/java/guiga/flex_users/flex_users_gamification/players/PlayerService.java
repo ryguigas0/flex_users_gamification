@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.IntegerRange;
-import org.apache.commons.lang3.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,8 +65,9 @@ public class PlayerService {
                         + "' not present in campaign schema!");
             }
 
-            if (documentSchema.get(filterEntry.getKey()).equals("Integer") || documentSchema.get(filterEntry.getKey()).equals("Double")) {
-                System.out.println(new NumberFilterRange(filterEntry.getValue()));
+            if (documentSchema.get(filterEntry.getKey()).equals("Integer")
+                    || documentSchema.get(filterEntry.getKey()).equals("Double")) {
+                System.out.println(filterEntry.getValue() + " --> " + new NumberFilterRange(filterEntry.getValue()));
             }
 
         }

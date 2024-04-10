@@ -10,9 +10,7 @@ public class PlayerListFilter {
     private Map<String, String> filterMap;
 
     public PlayerListFilter(Map<String, String> filterMap) {
-        System.out.println(filterMap);
-
-        String numberRangeRegex = "(\\[|\\()?\\d+(.\\d+)?(, \\d+(.\\d+))?(]|\\))?";
+        String numberRangeRegex = "((\\[|\\()?)(\\d)+(.(\\d)+)?(, (\\d)+(.(\\d)+)?)?((]|\\))?)";
         String stringFilterRegex = "(eq|ct):\"(\\w|\\d|\\s)+\"";
 
         for (Entry<String, String> filterEntry : filterMap.entrySet()) {
