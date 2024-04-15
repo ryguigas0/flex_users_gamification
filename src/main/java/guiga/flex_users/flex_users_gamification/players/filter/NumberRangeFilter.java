@@ -6,18 +6,18 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class NumberRangeFilter {
-    private String attrName;
+public class NumberRangeFilter extends AttributeFilter {
     private Number min = Double.MIN_VALUE;
     private Number max = Double.MAX_VALUE;
 
     // "inclusive range of 2 to 5" == 2,3,4,5
     // "exclusive range of 2 to 5" == 3,4
-    private boolean inclusive_left = false;
-    private boolean inclusive_right = false;
+    private boolean inclusiveLeft = false;
+    private boolean inclusiveRight = false;
 
     public NumberRangeFilter(String attrName, String filterString) {
-        this.attrName = attrName;
+        super(attrName);
+
         String[] filterComponents = filterString.split(",");
 
         // has min and max
@@ -38,20 +38,38 @@ public class NumberRangeFilter {
         }
 
         // equals
-        this.inclusive_left = true;
-        this.inclusive_right = true;
+        this.inclusiveLeft = true;
+        this.inclusiveRight = true;
         this.min = string2Number(filterString);
         this.max = string2Number(filterString);
+    }
+
+    @Override
+    public String toJsonbFilter() {
+        String minOperand = this.inclusiveLeft ? ">=" : ">";
+        String maxOperand = this.inclusiveRight ? "<=" : "<";
+
+        String minFilter = String.format("jsonb_extract_path(p.\"document\", '%s')\\:\\:numeric %s %s",
+                this.attrName,
+                minOperand,
+                this.getMin().toString());
+
+        String maxFilter = String.format("jsonb_extract_path(p.\"document\", '%s')\\:\\:numeric %s %s",
+                this.attrName,
+                maxOperand,
+                this.getMax().toString());
+
+        return minFilter + " and " + maxFilter;
     }
 
     private void setMax(String filterComponent) {
         int lastIndex = filterComponent.length() - 1;
         switch (filterComponent.charAt(lastIndex)) {
             case ']':
-                this.inclusive_right = true;
+                this.inclusiveRight = true;
                 break;
             case ')':
-                this.inclusive_right = false;
+                this.inclusiveRight = false;
                 break;
 
             default:
@@ -64,10 +82,10 @@ public class NumberRangeFilter {
     private void setMin(String filterComponent) {
         switch (filterComponent.charAt(0)) {
             case '[':
-                this.inclusive_left = true;
+                this.inclusiveLeft = true;
                 break;
             case '(':
-                this.inclusive_left = false;
+                this.inclusiveLeft = false;
                 break;
 
             default:

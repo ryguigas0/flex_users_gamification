@@ -6,14 +6,13 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class StringFilter {
-    private String attrName;
-    private boolean equals = false;
-    private boolean contains = false;
+public class StringFilter extends AttributeFilter {
+    private String operator;
     private String matchString;
 
     public StringFilter(String attrName, String filterString) {
-        this.attrName = attrName;
+        super(attrName);
+
         String[] filterComponents = filterString.split(":", 2);
 
         // dont accept empty filters
@@ -24,14 +23,26 @@ public class StringFilter {
         // figure out cmd
         switch (filterComponents[0]) {
             case "eq":
-                this.equals = true;
+                this.operator = "=";
+                this.matchString = "'" + filterComponents[1] + "'";
                 break;
             case "ct":
-                this.contains = true;
+                this.operator = "like";
+                this.matchString = "'%" + filterComponents[1] + "%'";
+                break;
 
             default:
                 throw new InvalidFilter("Invalid string filter: '" + filterComponents[0] + "'");
 
         }
     }
+
+    @Override
+    public String toJsonbFilter() {
+        return String.format("jsonb_extract_path_text(p.\"document\", '%s') %s %s",
+                this.attrName,
+                this.operator,
+                this.matchString);
+    }
+
 }

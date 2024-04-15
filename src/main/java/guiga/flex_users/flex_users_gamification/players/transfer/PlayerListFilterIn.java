@@ -5,11 +5,11 @@ import java.util.Map.Entry;
 import guiga.flex_users.flex_users_gamification.players.exceptions.InvalidFilter;
 import lombok.Getter;
 
-public class PlayerListFilter {
+public class PlayerListFilterIn {
     @Getter
     private Map<String, String> filterMap;
 
-    public PlayerListFilter(Map<String, String> filterMap) {
+    public PlayerListFilterIn(Map<String, String> filterMap) {
         String numberRangeRegex = "((\\[|\\()?)(\\d)+(.(\\d)+)?(, (\\d)+(.(\\d)+)?)?((]|\\))?)";
         String stringFilterRegex = "(eq|ct):(\\w|\\d|\\s|\\W)+";
 

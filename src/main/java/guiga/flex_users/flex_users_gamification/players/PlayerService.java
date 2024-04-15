@@ -10,10 +10,13 @@ import org.springframework.stereotype.Service;
 
 import guiga.flex_users.flex_users_gamification.players.exceptions.InvalidFilter;
 import guiga.flex_users.flex_users_gamification.players.exceptions.InvalidPlayerDocument;
+import guiga.flex_users.flex_users_gamification.players.filter.AttributeFilter;
 import guiga.flex_users.flex_users_gamification.players.filter.NumberRangeFilter;
 import guiga.flex_users.flex_users_gamification.players.filter.StringFilter;
+import guiga.flex_users.flex_users_gamification.players.repo.PlayerCrudRepo;
+import guiga.flex_users.flex_users_gamification.players.repo.PlayerCustomRepo;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerIn;
-import guiga.flex_users.flex_users_gamification.players.transfer.PlayerListFilter;
+import guiga.flex_users.flex_users_gamification.players.transfer.PlayerListFilterIn;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerOut;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerParser;
 
@@ -29,7 +32,10 @@ public class PlayerService {
     }
 
     @Autowired
-    private PlayerRepo repo;
+    private PlayerCrudRepo crud;
+
+    @Autowired
+    private PlayerCustomRepo customRepo;
 
     public PlayerOut savePlayer(PlayerIn playerIn) {
         // to check if a player document is valid...
@@ -53,12 +59,14 @@ public class PlayerService {
             }
         }
 
-        PlayerModel savedPlayerModel = repo.save(PlayerParser.from(playerIn));
+        PlayerModel savedPlayerModel = crud.save(PlayerParser.from(playerIn));
 
         return PlayerParser.from(savedPlayerModel);
     }
 
-    public List<PlayerOut> listPlayers(PlayerListFilter listFilter) {
+    public List<PlayerOut> listPlayers(PlayerListFilterIn listFilter) {
+        List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
+
         for (Map.Entry<String, String> filterEntry : listFilter.getFilterMap().entrySet()) {
             // check if filter entry key is in document schema
             if (!documentSchema.keySet().contains(filterEntry.getKey())) {
@@ -68,18 +76,16 @@ public class PlayerService {
 
             if (documentSchema.get(filterEntry.getKey()).equals("Integer")
                     || documentSchema.get(filterEntry.getKey()).equals("Double")) {
-                System.out.println(filterEntry.getValue() + " --> "
-                        + new NumberRangeFilter(filterEntry.getKey(), filterEntry.getValue()));
+                attributeFilters.add(new NumberRangeFilter(filterEntry.getKey(), filterEntry.getValue()));
             } else if (documentSchema.get(filterEntry.getKey()).equals("String")) {
-                System.out.println(filterEntry.getValue() + " --> "
-                        + new StringFilter(filterEntry.getKey(), filterEntry.getValue()));
+                attributeFilters.add(new StringFilter(filterEntry.getKey(), filterEntry.getValue()));
             }
 
         }
 
         List<PlayerOut> output = new ArrayList<>();
 
-        repo.findAll().forEach(pm -> output.add(PlayerParser.from(pm)));
+        customRepo.listPlayersByFilters(attributeFilters).forEach(pm -> output.add(PlayerParser.from(pm)));
 
         return output;
     }
