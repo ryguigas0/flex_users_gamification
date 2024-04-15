@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import guiga.flex_users.flex_users_gamification.players.PlayerModel;
 import guiga.flex_users.flex_users_gamification.players.filter.AttributeFilter;
-import guiga.flex_users.flex_users_gamification.players.filter.NumberRangeFilter;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -20,15 +19,17 @@ public class PlayerCustomRepo {
     public List<PlayerModel> listPlayersByFilters(List<AttributeFilter> filters) {
         StringBuilder queryBuilder = new StringBuilder("select * from players p");
 
-        queryBuilder.append(" where ");
+        if (filters.size() > 0) {
+            queryBuilder.append(" where ");
 
-        for (int i = 0; i < filters.size(); i++) {
-            if (i != 0) {
-                queryBuilder.append(" and ");
+            for (int i = 0; i < filters.size(); i++) {
+                if (i != 0) {
+                    queryBuilder.append(" and ");
+                }
+                AttributeFilter af = filters.get(i);
+
+                queryBuilder.append(af.toSQL());
             }
-            AttributeFilter af = filters.get(i);
-
-            queryBuilder.append(af.toJsonbFilter());
         }
 
         Query q = em.createNativeQuery(queryBuilder.toString(), PlayerModel.class);

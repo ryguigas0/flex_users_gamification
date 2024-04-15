@@ -15,8 +15,8 @@ public class NumberRangeFilter extends AttributeFilter {
     private boolean inclusiveLeft = false;
     private boolean inclusiveRight = false;
 
-    public NumberRangeFilter(String attrName, String filterString) {
-        super(attrName);
+    public NumberRangeFilter(String attrName, boolean forDocument, String filterString) {
+        super(attrName, forDocument);
 
         String[] filterComponents = filterString.split(",");
 
@@ -27,39 +27,23 @@ public class NumberRangeFilter extends AttributeFilter {
             return;
         }
 
-        // has min or max
+        // is min, max or equals
         if (filterComponents.length == 1) {
             try {
                 setMin(filterComponents[0]);
             } catch (Exception e) {
-                setMax(filterComponents[0]);
+                try {
+                    setMax(filterComponents[1]);
+                } catch (Exception e1) {
+                    this.inclusiveLeft = true;
+                    this.inclusiveRight = true;
+                    this.min = string2Number(filterString);
+                    this.max = string2Number(filterString);
+                }
             }
+
             return;
         }
-
-        // equals
-        this.inclusiveLeft = true;
-        this.inclusiveRight = true;
-        this.min = string2Number(filterString);
-        this.max = string2Number(filterString);
-    }
-
-    @Override
-    public String toJsonbFilter() {
-        String minOperand = this.inclusiveLeft ? ">=" : ">";
-        String maxOperand = this.inclusiveRight ? "<=" : "<";
-
-        String minFilter = String.format("jsonb_extract_path(p.\"document\", '%s')\\:\\:numeric %s %s",
-                this.attrName,
-                minOperand,
-                this.getMin().toString());
-
-        String maxFilter = String.format("jsonb_extract_path(p.\"document\", '%s')\\:\\:numeric %s %s",
-                this.attrName,
-                maxOperand,
-                this.getMax().toString());
-
-        return minFilter + " and " + maxFilter;
     }
 
     private void setMax(String filterComponent) {
@@ -106,6 +90,25 @@ public class NumberRangeFilter extends AttributeFilter {
                 throw new InvalidFilter("Invalid value '" + trimmed + "' for number filtering!");
             }
         }
+    }
+
+    @Override
+    public String toSQL() {
+        String source = this.forDocument ? "jsonb_extract_path(p.\"document\", '%s')\\:\\:numeric" : "p.\"%s\"";
+        String minOperand = this.inclusiveLeft ? ">=" : ">";
+        String maxOperand = this.inclusiveRight ? "<=" : "<";
+
+        String minFilter = String.format(source + " %s %s",
+                this.attrName,
+                minOperand,
+                this.getMin().toString());
+
+        String maxFilter = String.format(source + " %s %s",
+                this.attrName,
+                maxOperand,
+                this.getMax().toString());
+
+        return minFilter + " and " + maxFilter;
     }
 
 }

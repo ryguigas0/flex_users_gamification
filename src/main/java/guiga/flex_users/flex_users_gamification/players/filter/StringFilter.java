@@ -10,8 +10,8 @@ public class StringFilter extends AttributeFilter {
     private String operator;
     private String matchString;
 
-    public StringFilter(String attrName, String filterString) {
-        super(attrName);
+    public StringFilter(String attrName, boolean forDocument, String filterString) {
+        super(attrName, forDocument);
 
         String[] filterComponents = filterString.split(":", 2);
 
@@ -38,8 +38,10 @@ public class StringFilter extends AttributeFilter {
     }
 
     @Override
-    public String toJsonbFilter() {
-        return String.format("jsonb_extract_path_text(p.\"document\", '%s') %s %s",
+    public String toSQL() {
+        String source = this.forDocument? "jsonb_extract_path_text(p.\"document\", '%s')" : "p.\"%s\"";
+
+        return String.format(source + " %s %s",
                 this.attrName,
                 this.operator,
                 this.matchString);

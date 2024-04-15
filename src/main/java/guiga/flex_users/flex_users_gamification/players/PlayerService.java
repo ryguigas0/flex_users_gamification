@@ -31,6 +31,14 @@ public class PlayerService {
         documentSchema.put("cel-number", "String");
     }
 
+    private static HashMap<String, String> playerSchema = new HashMap<>();
+
+    static {
+        playerSchema.put("id", "Integer");
+        playerSchema.put("points", "Integer");
+        playerSchema.put("name", "String");
+    }
+
     @Autowired
     private PlayerCrudRepo crud;
 
@@ -68,19 +76,15 @@ public class PlayerService {
         List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
 
         for (Map.Entry<String, String> filterEntry : listFilter.getFilterMap().entrySet()) {
-            // check if filter entry key is in document schema
-            if (!documentSchema.keySet().contains(filterEntry.getKey())) {
+            // validate if its a player attribute or player document attribute
+            if (playerSchema.keySet().contains(filterEntry.getKey())) {
+                attributeFilters.add(filterEntry2AttrFilter(filterEntry, false));
+            } else if (documentSchema.keySet().contains(filterEntry.getKey())) {
+                attributeFilters.add(filterEntry2AttrFilter(filterEntry, true));
+            } else {
                 throw new InvalidFilter("Attribute '" + filterEntry.getKey()
                         + "' not present in campaign schema!");
             }
-
-            if (documentSchema.get(filterEntry.getKey()).equals("Integer")
-                    || documentSchema.get(filterEntry.getKey()).equals("Double")) {
-                attributeFilters.add(new NumberRangeFilter(filterEntry.getKey(), filterEntry.getValue()));
-            } else if (documentSchema.get(filterEntry.getKey()).equals("String")) {
-                attributeFilters.add(new StringFilter(filterEntry.getKey(), filterEntry.getValue()));
-            }
-
         }
 
         List<PlayerOut> output = new ArrayList<>();
@@ -88,5 +92,30 @@ public class PlayerService {
         customRepo.listPlayersByFilters(attributeFilters).forEach(pm -> output.add(PlayerParser.from(pm)));
 
         return output;
+    }
+
+    private AttributeFilter filterEntry2AttrFilter(Map.Entry<String, String> filterEntry, boolean forDocument) {
+        AttributeFilter af = null;
+        String attrType = "";
+
+        if (forDocument) {
+            attrType = documentSchema.get(filterEntry.getKey());
+        } else {
+            attrType = playerSchema.get(filterEntry.getKey());
+        }
+
+        switch (attrType) {
+            case "Integer":
+            case "Double":
+                af = new NumberRangeFilter(filterEntry.getKey(), forDocument, filterEntry.getValue());
+                break;
+            case "String":
+                af = new StringFilter(filterEntry.getKey(), forDocument, filterEntry.getValue());
+                break;
+
+        }
+
+        return af;
+
     }
 }

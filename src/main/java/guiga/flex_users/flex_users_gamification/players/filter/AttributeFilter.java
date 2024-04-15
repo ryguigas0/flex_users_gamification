@@ -7,8 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public abstract class AttributeFilter {
     protected String attrName;
+    protected boolean forDocument = false;
 
-    public String toJsonbFilter(){
+    public String toSQL() {
         return null;
     }
 }
