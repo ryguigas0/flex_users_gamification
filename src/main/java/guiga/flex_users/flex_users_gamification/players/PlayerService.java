@@ -15,6 +15,7 @@ import guiga.flex_users.flex_users_gamification.players.filter.NumberRangeFilter
 import guiga.flex_users.flex_users_gamification.players.filter.StringFilter;
 import guiga.flex_users.flex_users_gamification.players.repo.PlayerCrudRepo;
 import guiga.flex_users.flex_users_gamification.players.repo.PlayerCustomRepo;
+import guiga.flex_users.flex_users_gamification.players.transfer.PlayerDeliverPointsIn;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerIn;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerListFilterIn;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerOut;
@@ -73,9 +74,17 @@ public class PlayerService {
     }
 
     public List<PlayerOut> listPlayers(PlayerListFilterIn listFilter) {
+        List<PlayerOut> output = new ArrayList<>();
+
+        getPlayersFromFilterString(listFilter.getFilterMap()).forEach(pm -> output.add(PlayerParser.from(pm)));
+
+        return output;
+    }
+
+    private List<PlayerModel> getPlayersFromFilterString(Map<String, String> filterMap) {
         List<AttributeFilter> attributeFilters = new ArrayList<AttributeFilter>();
 
-        for (Map.Entry<String, String> filterEntry : listFilter.getFilterMap().entrySet()) {
+        for (Map.Entry<String, String> filterEntry : filterMap.entrySet()) {
             // validate if its a player attribute or player document attribute
             if (playerSchema.keySet().contains(filterEntry.getKey())) {
                 attributeFilters.add(filterEntry2AttrFilter(filterEntry, false));
@@ -87,11 +96,7 @@ public class PlayerService {
             }
         }
 
-        List<PlayerOut> output = new ArrayList<>();
-
-        customRepo.listPlayersByFilters(attributeFilters).forEach(pm -> output.add(PlayerParser.from(pm)));
-
-        return output;
+        return customRepo.listPlayersByFilters(attributeFilters);
     }
 
     private AttributeFilter filterEntry2AttrFilter(Map.Entry<String, String> filterEntry, boolean forDocument) {
@@ -117,5 +122,17 @@ public class PlayerService {
 
         return af;
 
+    }
+
+    public List<PlayerOut> deliverPoints(PlayerDeliverPointsIn playerDeliverPointsIn) {
+        List<PlayerModel> players = getPlayersFromFilterString(playerDeliverPointsIn.getPlayerFilter());
+
+        for (PlayerModel pm : players) {
+            pm.setPoints(pm.getPoints() + playerDeliverPointsIn.getAddPoints());
+
+            crud.save(pm);
+        }
+
+        return players.stream().map(pm -> PlayerParser.from(pm)).toList();
     }
 }

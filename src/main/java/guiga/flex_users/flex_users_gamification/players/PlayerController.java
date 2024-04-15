@@ -2,6 +2,7 @@ package guiga.flex_users.flex_users_gamification.players;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import guiga.flex_users.flex_users_gamification.players.transfer.PlayerDeliverPointsIn;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerIn;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerListFilterIn;
 import guiga.flex_users.flex_users_gamification.players.transfer.PlayerOut;
@@ -30,6 +31,11 @@ public class PlayerController {
     @GetMapping("/")
     public List<PlayerOut> listPlayers(@RequestBody Map<String, String> filterMap) {
         return service.listPlayers(new PlayerListFilterIn(filterMap));
+    }
+
+    @PostMapping("/deliver-points")
+    public List<PlayerOut> deliverPoints(@RequestBody PlayerDeliverPointsIn playerDeliverPointsIn) {
+        return service.deliverPoints(playerDeliverPointsIn);
     }
 
 }
