@@ -32,7 +32,7 @@
             ],
             "body": {
               "mode": "json",
-              "json": "{\n  \"name\": \"test-player\",\n  \"points\": 0,\n  \"document\": {\n    \"cel-number\": \"12456789674\",\n    \"performance\": 0.3,\n    \"age\": 22\n  }\n}",
+              "json": "{\n  \"campaignId\": 2,\n  \"name\": \"test-player\",\n  \"points\": 0,\n  \"document\": {\n    \"cel-number\": \"12456789674\",\n    \"performance\": 0.3,\n    \"age\": 22\n  }\n}",
               "formUrlEncoded": [],
               "multipartForm": []
             },
@@ -47,7 +47,7 @@
               }
             },
             "script": {
-              "req": "var { nanoid } = require(\"nanoid\");\nvar _ = require(\"lodash\");\n\nreq.setBody({\n  \"name\": nanoid(),\n  \"points\": _.random(1, 1000),\n  \"document\": {\n    \"cel-number\": `124567896${_.random(10,99)}`,\n    \"performance\": _.random(0.1, 1.0),\n    \"age\": _.random(20, 80)\n  }\n})"
+              "req": "var { nanoid } = require(\"nanoid\");\nvar _ = require(\"lodash\");\n\nreq.setBody({\n  \"campaignId\": 2,\n  \"name\": nanoid(),\n  \"points\": _.random(1, 1000),\n  \"document\": {\n    \"cel-number\": `124567896${_.random(10,99)}`,\n    \"performance\": _.random(0.1, 1.0),\n    \"age\": _.random(20, 80)\n  }\n})"
             },
             "vars": {},
             "assertions": [],
@@ -57,21 +57,15 @@
         },
         {
           "type": "http",
-          "name": "List Players",
-          "seq": 1,
+          "name": "Deliver points",
+          "seq": 3,
           "request": {
-            "url": "{{url}}/api/players/",
-            "method": "GET",
-            "headers": [
-              {
-                "name": "User-Agent",
-                "value": "insomnia/2023.5.8",
-                "enabled": true
-              }
-            ],
+            "url": "{{url}}/api/players/deliver-points",
+            "method": "POST",
+            "headers": [],
             "body": {
               "mode": "json",
-              "json": "{\n}",
+              "json": "{\n  \"campaignId\": 2,\n  \"addPoints\": 200,\n  \"filterMap\": {\n    \"age\": \"[50\"\n  }\n}",
               "formUrlEncoded": [],
               "multipartForm": []
             },
@@ -94,15 +88,88 @@
         },
         {
           "type": "http",
-          "name": "Deliver points",
-          "seq": 3,
+          "name": "List Players",
+          "seq": 1,
           "request": {
-            "url": "{{url}}/api/players/deliver-points",
+            "url": "{{url}}/api/players/",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "User-Agent",
+                "value": "insomnia/2023.5.8",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"campaignId\": 2,\n  \"filterMap\": {\n    \"age\": \"[50\"\n  }\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Campaigns",
+      "items": [
+        {
+          "type": "http",
+          "name": "Create",
+          "seq": 2,
+          "request": {
+            "url": "{{url}}/api/campaigns/",
             "method": "POST",
             "headers": [],
             "body": {
               "mode": "json",
-              "json": "{\n  \"addPoints\": 200,\n  \"filterMap\": {\n    \"id\": 3\n  }\n}",
+              "json": "{\n  \"name\": \"Teste\",\n  \"playerDocumentSchema\": {\n    \"age\": \"Integer\",\n    \"performance\": \"Double\",\n    \"cel-number\": \"String\"\n  }\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "auth": {
+              "mode": "none",
+              "basic": {
+                "username": "",
+                "password": ""
+              },
+              "bearer": {
+                "token": ""
+              }
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "query": []
+          }
+        },
+        {
+          "type": "http",
+          "name": "List",
+          "seq": 1,
+          "request": {
+            "url": "{{url}}/api/campaigns/",
+            "method": "GET",
+            "headers": [],
+            "body": {
+              "mode": "none",
               "formUrlEncoded": [],
               "multipartForm": []
             },
@@ -126,7 +193,6 @@
       ]
     }
   ],
-  "activeEnvironmentUid": "0GoQ9qGNAVzIkJuuFXbtg",
   "environments": [
     {
       "variables": [
