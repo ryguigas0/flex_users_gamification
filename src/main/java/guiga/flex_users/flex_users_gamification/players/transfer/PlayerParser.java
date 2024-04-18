@@ -8,6 +8,7 @@ public class PlayerParser {
                 .name(playerIn.getName())
                 .points(playerIn.getPoints())
                 .document(playerIn.getDocument())
+                .campaignId(playerIn.getCampaignId())
                 .build();
 
     }
@@ -18,6 +19,7 @@ public class PlayerParser {
                 .name(playerModel.getName())
                 .points(playerModel.getPoints())
                 .document(playerModel.getDocument())
+                .campaignId(playerModel.getCampaignId())
                 .build();
     }
 }

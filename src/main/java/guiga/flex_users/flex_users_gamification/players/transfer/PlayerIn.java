@@ -3,6 +3,7 @@ package guiga.flex_users.flex_users_gamification.players.transfer;
 import java.util.Map;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,9 @@ import lombok.ToString;
 @Builder
 @ToString
 public class PlayerIn {
+    @NotNull
+    private Long campaignId;
+
     @NotBlank
     private String name;
 
@@ -21,7 +25,9 @@ public class PlayerIn {
 
     private Map<String, Object> document;
 
-    public PlayerIn(String name, Integer points, Map<String, Object> document) {
+    public PlayerIn(Long campaignId, String name, Integer points, Map<String, Object> document) {
+        this.campaignId = campaignId;
+
         this.document = document;
 
         this.name = name;

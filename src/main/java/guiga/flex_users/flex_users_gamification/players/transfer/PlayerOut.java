@@ -5,5 +5,5 @@ import java.util.Map;
 import lombok.Builder;
 
 @Builder
-public record PlayerOut(Long id, Integer points, String name, Map<String, Object> document) {
+public record PlayerOut(Long id, Integer points, String name, Map<String, Object> document, Long campaignId) {
 }
