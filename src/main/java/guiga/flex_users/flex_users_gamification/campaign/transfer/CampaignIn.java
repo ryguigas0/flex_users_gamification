@@ -2,7 +2,7 @@ package guiga.flex_users.flex_users_gamification.campaign.transfer;
 
 import java.util.Map;
 
-import guiga.flex_users.flex_users_gamification.campaign.PlyaerSchemaTypes;
+import guiga.flex_users.flex_users_gamification.campaign.PlayerSchemaTypes;
 import guiga.flex_users.flex_users_gamification.campaign.exceptions.InvalidPlayerSchemaType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -19,7 +19,7 @@ public class CampaignIn {
         this.name = name;
 
         for (Map.Entry<String, String> schemaEntry : playerDocumentSchema.entrySet()) {
-            if (!PlyaerSchemaTypes.isAvaliableType(schemaEntry.getValue())) {
+            if (!PlayerSchemaTypes.isAvaliableType(schemaEntry.getValue())) {
                 throw new InvalidPlayerSchemaType("'" + schemaEntry.getValue() + "' is not a valid type!");
             }
         }
