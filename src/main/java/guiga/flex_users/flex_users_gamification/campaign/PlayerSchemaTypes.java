@@ -3,7 +3,7 @@ package guiga.flex_users.flex_users_gamification.campaign;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlyaerSchemaTypes {
+public class PlayerSchemaTypes {
     private static List<String> avaliableTypes = new ArrayList<String>();
 
     static {
