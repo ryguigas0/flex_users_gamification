@@ -47,23 +47,23 @@ public class PlayerService {
         Map<String, String> documentSchema = campaign.getPlayerDocumentSchema();
 
         // to check if a player document is valid...
-        for (Map.Entry<String, Object> documentEntry : playerIn.getDocument().entrySet()) {
-            String documentEntryKey = documentEntry.getKey();
+        for (Map.Entry<String, String> documentEntry : documentSchema.entrySet()) {
+            String neededDocumentKey = documentEntry.getKey();
 
             // the documentEntry key must be present in the schema
-            boolean keyPresent = documentSchema.keySet().contains(documentEntryKey);
+            boolean keyPresent = playerIn.getDocument().keySet().contains(neededDocumentKey);
             if (!keyPresent) {
-                throw new InvalidPlayerDocument("Attribute '" + documentEntryKey
+                throw new InvalidPlayerDocument("Attribute '" + neededDocumentKey
                         + "' not present in campaign schema!");
             }
 
-            // the value must either null or the corresponding type
-            String schemaType = documentSchema.get(documentEntryKey);
-            Object documentEntryValue = documentEntry.getValue();
+            // the value must be the corresponding type
+            String schemaType = documentEntry.getValue();
+            Object playerDocumentValue = playerIn.getDocument().get(neededDocumentKey);
 
-            if (documentEntryValue != null && !documentEntryValue.getClass().getSimpleName().equals(schemaType)) {
+            if (!playerDocumentValue.getClass().getSimpleName().equals(schemaType)) {
                 throw new InvalidPlayerDocument(
-                        "Cannot parse '" + documentEntryKey + "' to type '" + schemaType + "'");
+                        "Cannot parse '" + playerDocumentValue + "' to type '" + schemaType + "'");
             }
         }
 
@@ -139,5 +139,24 @@ public class PlayerService {
         }
 
         return players.stream().map(pm -> PlayerParser.from(pm)).toList();
+    }
+
+    public void removeKey(String deleteKey, Long campaignId) {
+        crud.deleteDocumentKey(deleteKey, campaignId);
+    }
+
+    public void addKey(String newKey, String type, Long campaignId) {
+        crud.addNewDocumentKey(newKey, getDefaultValue(type), campaignId);
+    }
+
+    private Object getDefaultValue(String type) {
+        switch (type) {
+            case "Integer":
+                return 0;
+            case "Double":
+                return 0.0;
+            default:
+                return "EMPTY";
+        }
     }
 }
