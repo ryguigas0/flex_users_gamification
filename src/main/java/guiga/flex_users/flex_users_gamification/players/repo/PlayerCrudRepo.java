@@ -16,6 +16,6 @@ public interface PlayerCrudRepo extends CrudRepository<PlayerModel, Long> {
     void addNewDocumentKey(@Param("key") String key, @Param("value") Object value, @Param("campaignId") Long campaignId);
 
     @Modifying
-    @Query(value = "update players set document = document\\:\\:jsonb - ':deleteKey' where campaign_id = :campaignId", nativeQuery = true)
+    @Query(value = "update players set document = document\\:\\:jsonb - :deleteKey where campaign_id = :campaignId", nativeQuery = true)
     void deleteDocumentKey(@Param("deleteKey") String deleteKey, @Param("campaignId") Long campaignId);
 }
