@@ -16,7 +16,7 @@ public class PlayerCustomRepo {
     @PersistenceContext
     private EntityManager em;
 
-    public List<PlayerModel> listPlayersByFilters(List<AttributeFilter> filters) {
+    public List<PlayerModel> listPlayersByFilters(List<AttributeFilter> filters, Long campaignId) {
         StringBuilder queryBuilder = new StringBuilder("select * from players p");
 
         if (filters.size() > 0) {
@@ -30,6 +30,10 @@ public class PlayerCustomRepo {
 
                 queryBuilder.append(af.toSQL());
             }
+
+            queryBuilder.append(" and p.campaign_id = " + campaignId);
+        } else {
+            queryBuilder.append(" where p.campaign_id = " + campaignId);
         }
 
         Query q = em.createNativeQuery(queryBuilder.toString(), PlayerModel.class);

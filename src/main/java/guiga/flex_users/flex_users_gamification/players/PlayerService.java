@@ -99,7 +99,7 @@ public class PlayerService {
             }
         }
 
-        return customRepo.listPlayersByFilters(attributeFilters);
+        return customRepo.listPlayersByFilters(attributeFilters, campaignId);
     }
 
     private AttributeFilter filterEntry2AttrFilter(Map.Entry<String, String> filterEntry, Map<String, String> schema,

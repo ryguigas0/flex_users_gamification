@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Players</title>
+</head>
+
+<body>
+    {% for player in players %}
+    <div class="card">
+        <div class="card-img-top"></div>
+        <div class="card-body text-center">
+            <h5 class="card-title">{{player.name}}</h5>
+        </div>
+    </div>
+    {% endfor %}
+</body>
+
+</html>

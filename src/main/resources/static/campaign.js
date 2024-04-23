@@ -3,7 +3,7 @@ console.log("IMPORTED campaign.js")
 document.querySelectorAll(".select-campaign").forEach((selectBtn) => {
     selectBtn.onclick = function () {
 
-        window.location.href = "/campaigns/" + selectBtn.dataset.campaignId
+        window.location.href = "/backoffice/campaigns/" + selectBtn.dataset.campaignId
     }
 })
 
