@@ -2,17 +2,16 @@ body {
     padding: 1.6rem;
 }
 
-
 .card {
     width: 16rem;
     height: 12rem;
     padding: 0;
     border-width: 0.12rem;
+    user-select: none;
 }
 
-.card:hover {
-    border-color: black;
-    border-width: 0.12rem;
+.card-title {
+    user-select: all;
 }
 
 .card-img-top {
@@ -28,10 +27,6 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-}
-
-.card-body:hover {
-    cursor: pointer;
 }
 
 .add-campaign-btn:hover {
@@ -57,7 +52,6 @@ body {
     border: solid;
     border-color: transparent;
     border-radius: 100%;
-
 
     font-variation-settings:
         'FILL' 0,
