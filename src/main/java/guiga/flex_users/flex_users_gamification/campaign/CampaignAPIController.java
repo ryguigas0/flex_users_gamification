@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
 @RequestMapping("/api/campaigns")
-public class CampaignController {
+public class CampaignAPIController {
     @Autowired
     private CampaignService service;
 

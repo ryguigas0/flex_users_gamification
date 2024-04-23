@@ -44,8 +44,8 @@ public class CampaignModel {
     @Type(JsonType.class)
     private Map<String, String> playerSchema;
 
-    @OneToMany(orphanRemoval=true)
-    @JoinColumn(name="campaign_id")
-    @Builder.Default
-    private List<PlayerModel> players = new ArrayList<PlayerModel>();
+    // @OneToMany(orphanRemoval=true)
+    // @JoinColumn(name="campaign_id")
+    // @Builder.Default
+    // private List<PlayerModel> players = new ArrayList<PlayerModel>();
 }
