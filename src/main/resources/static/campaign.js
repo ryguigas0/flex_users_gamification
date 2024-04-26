@@ -9,7 +9,12 @@ document.querySelectorAll(".select-campaign").forEach((selectBtn) => {
 
 document.querySelectorAll(".edit-campaign").forEach((editBtn) => {
     editBtn.onclick = function () {
-        setEditCampaignModal("Editing campaign " + editBtn.dataset.campaignId)
+        let campaign = {
+            name: editBtn.dataset.campaignName,
+            schema: editBtn.dataset.campaignSchema,
+        }
+
+        setEditCampaignModal("Editing campaign " + editBtn.dataset.campaignId, campaign)
     }
 })
 
@@ -23,10 +28,12 @@ document.querySelectorAll(".delete-campaign").forEach((rmBtn) => {
     }
 })
 
+import { readCampaign } from "./campaign_form.js";
+
 function setEditCampaignModal(title, prevCampaignData) {
-    const modal = new bootstrap.Modal(document.getElementById('editCampaignModal'))
+    let modalTitle = document.querySelector("#editCampaignModalTitle")
 
-    console.log(modal)
+    modalTitle.textContent = title
 
-    document.querySelector("#editCampaignModal > div > div > div.modal-header > h5").textContent = title
+    readCampaign(prevCampaignData.schema)
 }
