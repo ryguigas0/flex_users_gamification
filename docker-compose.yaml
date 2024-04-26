@@ -3,7 +3,7 @@ name: 'flex-users-compose-dev'
 
 services:
   db:
-    container_name: 'flex_users_db'
+    container_name: 'flex_users_db_dev'
     image: postgres:16.2-alpine3.19
     ports:
       - "5432:5432"
