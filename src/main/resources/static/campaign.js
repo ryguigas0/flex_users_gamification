@@ -10,6 +10,7 @@ document.querySelectorAll(".select-campaign").forEach((selectBtn) => {
 document.querySelectorAll(".edit-campaign").forEach((editBtn) => {
     editBtn.onclick = function () {
         let campaign = {
+            id: editBtn.dataset.campaignId,
             name: editBtn.dataset.campaignName,
             schema: editBtn.dataset.campaignSchema,
         }
@@ -30,10 +31,10 @@ document.querySelectorAll(".delete-campaign").forEach((rmBtn) => {
 
 import { readCampaign } from "./campaign_form.js";
 
-function setEditCampaignModal(title, prevCampaignData) {
+function setEditCampaignModal(title, campaign) {
     let modalTitle = document.querySelector("#editCampaignModalTitle")
 
     modalTitle.textContent = title
 
-    readCampaign(prevCampaignData.schema)
+    readCampaign(campaign ? campaign : { schema: "{}" })
 }

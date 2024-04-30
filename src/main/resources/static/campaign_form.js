@@ -1,6 +1,8 @@
 console.log("IMPORTED JSON FORM")
 
 let prevSchema = {}
+let editing = false
+let campaignId = undefined
 export let removedFields = new Set()
 
 // ADD FIELD
@@ -105,11 +107,12 @@ function removeField(uuid) {
 }
 
 // GENERATE JSON
-function generateJson() {
-    console.log("GENERATING JSON")
+async function postCampaign() {
+    console.log("POST CAMPAIGN")
+    let name = document.getElementById("campaign-name").value
     let trs = document.getElementById("json-form-fields").querySelectorAll('tr')
 
-    let jsonAcc = {}
+    let newAttributes = {}
 
     for (let i = 0; i < trs.length; i++) {
         const tr = trs[i];
@@ -122,20 +125,62 @@ function generateJson() {
         // else if the key is present and the field type is different, its an remove and add
         // else the key is present in prev schema and the same type, nothing changed
         if (Object.keys(prevSchema).find(key => key === fieldName) === undefined) {
-            jsonAcc[`${fieldName}`] = fieldType
+            newAttributes[`${fieldName}`] = fieldType
         } else if (prevSchema[fieldName] !== fieldType) {
             removedFields.add(fieldName)
-            jsonAcc[fieldName] = fieldType
+            newAttributes[fieldName] = fieldType
         } else {
             continue
         }
     }
 
-    console.log({ jsonAcc, removedFields })
+
+    let baseURL = "/api/campaigns/"
+    let body = {}
+    let fetchArgs = {
+        headers: {
+            "Content-Type": "application/json;charset=UTF-8"
+        }
+    }
+
+    if (editing) {
+        if (name !== "") {
+            body["name"] = name
+        }
+
+        if (removedFields.size !== 0) {
+            body["deleteAttributes"] = Array.from(removedFields.values)
+        }
+
+        if (Object.keys(newAttributes).length !== 0) {
+            body["newAttributes"] = newAttributes
+        }
+
+        fetchArgs.method = "PUT"
+
+        baseURL += campaignId
+
+    } else {
+        body["name"] = name
+        body["playerDocumentSchema"] = newAttributes
+
+        fetchArgs.method = "POST"
+    }
+
+    fetchArgs.body = JSON.stringify(body)
+
+    console.log({ baseURL, fetchArgs })
+
+    let response = await fetch(baseURL, fetchArgs)
+
+    console.log({ response })
+
+    window.location.reload()
+
 }
 
-document.getElementById("save-changes").onclick = function () {
-    generateJson()
+document.getElementById("save-changes").onclick = async function () {
+    await postCampaign()
 }
 
 // READ CAMPAIGN DATA
@@ -146,16 +191,17 @@ document.getElementById("save-changes").onclick = function () {
 //     }
 // }
 
-export function readCampaign(campaignSchemaStr) {
+export function readCampaign(campaign) {
     console.log("READING CAMPAIGN")
+    editing = campaign.id !== undefined
+    campaignId = campaign.id
 
-    let campaignSchema = campaignSchemaStr
+    let campaignSchema = campaign
+        .schema
         .replaceAll("}", "")
         .replaceAll("{", "")
         .split(",")
         .map(l => l.split("=").map(c => c.trim()))
-
-    console.log({ campaignSchema })
 
     // let jsonInput = JSON.parse(document.getElementById('json-io').value)
 

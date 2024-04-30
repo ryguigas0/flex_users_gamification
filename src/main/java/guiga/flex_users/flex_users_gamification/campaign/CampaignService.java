@@ -44,7 +44,6 @@ public class CampaignService {
         List<CampaignOut> output = new ArrayList<CampaignOut>();
 
         repo.findAll().forEach(cm -> output.add(CampaignParser.from(cm)));
-        ;
 
         return output;
     }
